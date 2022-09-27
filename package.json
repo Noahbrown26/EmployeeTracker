@@ -1,0 +1,24 @@
+{
+  "name": "employeetracker",
+  "version": "1.0.0",
+  "description": "A command line application to view and interact with information stored in a database",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Noahbrown26/EmployeeTracker.git"
+  },
+  "author": "Noah Brown",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Noahbrown26/EmployeeTracker/issues"
+  },
+  "homepage": "https://github.com/Noahbrown26/EmployeeTracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^9.1.2",
+    "mysql2": "^2.3.3"
+  }
+}
