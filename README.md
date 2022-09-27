@@ -4,7 +4,7 @@
   
   
 ## Description
-This is the 12th challenge for my Coding bootcamp journey. For this challenge, we had to follow acceptance criteria to create a command-line application using NodeJS that is capable of viewing and interacting with information in the SQL database. This application uses the ``Inquirer`` package for prompting the user as well as ``console.table`` to print mySQL to the console.
+This is the 12th challenge for my Coding bootcamp journey. For this challenge, we had to follow acceptance criteria to create a command-line application using NodeJS that is capable of viewing and interacting with information in the SQL database. This application uses the ``Inquirer`` package for prompting the user as well as ``Console.table`` to print mySQL to the console.
   
 ## Table of Contents
 * [Description](#description)
