@@ -18,9 +18,9 @@ This is the 12th challenge for my Coding bootcamp journey. For this challenge, w
 * Run the command ``node index.js`` to initiate the application
   
 ## Usage
-You can view a walkthrough video of the application [here](#)
+You can view a walkthrough video of the application [here](https://raw.githubusercontent.com/Noahbrown26/EmployeeTracker/main/assets/demo.mp4)
 
-![](#)
+![](./assets/images/demo.PNG)
   
 ## Questions
 Any Questions? Please reachout to me at Noahbrown2663@gmail.com

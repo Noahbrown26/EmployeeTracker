@@ -261,3 +261,146 @@ function addDepartment() {
     })
 }
 
+// READ //
+
+// view all employees //
+function viewAllEmployees() {
+  connection.query("SELECT eleft.first_name, eleft.last_name, title, name as department, salary, CONCAT(eright.first_name, ' ', eright.last_name) AS manager FROM employee as eLeft LEFT JOIN role ON eleft.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee eright ON eleft.manager_id = eright.id", function (err, res) {
+    if (err) throw err;
+    console.table(
+      "-------------------------------------",
+      "All Employees:",
+      "-------------------------------------",
+      res
+    );
+    start();
+  });
+}
+
+// view all roles //
+function viewAllRoles() {
+  connection.query("SELECT role.id, title, name as department FROM role LEFT JOIN department ON role.department_id = department.id", function (err, res) {
+    if (err) throw err;
+    console.table(
+      "-------------------------------------",
+      "All Roles:",
+      "-------------------------------------",
+      res
+    );
+    start();
+  });
+}
+
+// view all departments //
+function viewAllDepartments() {
+  connection.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err;
+    console.table(
+      "-------------------------------------",
+      "All Departments:",
+      "-------------------------------------",
+      res
+    );
+    start();
+  });
+}
+
+// view all employee departments //
+function viewEmployeeDepartment() {
+  connection.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err;
+
+    const myDeps = res.map(function (deps) {
+      return { 
+        name: deps.name,
+        value: deps.id 
+      };
+    });
+
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "department",
+          message: "Select a department to view its employees:",
+          choices: myDeps
+        }
+      ])
+      .then(function (data) {
+        connection.query("SELECT eleft.first_name, eleft.last_name, title, name as department, salary, CONCAT(eright.first_name, ' ', eright.last_name) AS manager FROM employee as eLeft LEFT JOIN role ON eleft.role_id = role.id LEFT JOIN department ON role.department_id = department.id RIGHT JOIN employee eright ON eleft.manager_id = eright.id WHERE department.id="+data.department+"", function (err, res) {
+          if (err) throw err;
+          console.table(
+            "-------------------------------------",
+            "All Employees in the " + myDeps[data.department-1].name + " department:",
+            "-------------------------------------",
+            res
+          );
+          start();
+        });
+      })
+    })
+}
+
+// UPDATE //
+
+// update employee role //
+function updateEmployeeRole() {
+  connection.query("SELECT id,CONCAT(first_name, ' ', last_name) AS emp FROM employee", function(err, res){
+    if (err) throw err;
+
+    const empUpdate = res.map(function(empData){
+      return {
+        name: empData.emp,
+        value: empData.id
+      }
+    })
+   inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "employee",
+        message: "Which employee's role would you like to change?:",
+        choices: empUpdate
+      }
+    ]).then(function(data){
+      const empUpdate = data.employee;
+      connection.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
+
+        const myRole = res.map(function (roles) {
+          return { 
+            name: roles.title,
+            value: roles.id 
+          };
+        });
+
+        inquirer
+          .prompt([
+            {
+              type: "list",
+              name: "roles",
+              message: "Select a role:",
+              choices: myRole
+            }
+          ]).then(function(data){
+            connection.query(
+              "UPDATE employee SET role_id= "+data.roles+" WHERE id="+empUpdate+"",
+               function(err, res)
+              {
+              if (err) throw err;
+              viewAllEmployees();
+              }
+            )
+          })
+        })
+    })
+  })
+}
+
+// quit //
+function quit() {
+  console.log("-------------------------------------");
+  console.log("Goodbye");
+  console.log("-------------------------------------");
+  connection.end();
+}
