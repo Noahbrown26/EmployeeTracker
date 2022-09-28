@@ -18,7 +18,8 @@
   "homepage": "https://github.com/Noahbrown26/EmployeeTracker#readme",
   "dependencies": {
     "console.table": "^0.10.0",
-    "inquirer": "^9.1.2",
-    "mysql2": "^2.3.3"
+    "dotenv": "^16.0.2",
+    "mysql2": "^2.3.3",
+    "inquirer": "8.0.0"
   }
 }
