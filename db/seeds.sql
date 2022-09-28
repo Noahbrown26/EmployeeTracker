@@ -1,7 +1,7 @@
 USE employees_db;
 
 INSERT INTO department
-    (department_name)
+    (name)
 VALUES
     ('Engineering'),
     ('Finance'),
@@ -38,9 +38,9 @@ SELECT role.id, role.title, role.salary FROM role ORDER BY role.id;
 
 SELECT * FROM employee;
 
-SELECT department.id, department.department_name FROM department ORDER BY department.id;
+SELECT department.id, department.name FROM department ORDER BY department.id;
 
-  SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+  SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
   FROM employee
   LEFT JOIN employee manager on manager.id = employee.manager_id
   INNER JOIN role ON (role.id = employee.role_id)

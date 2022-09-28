@@ -1,3 +1,4 @@
+// require dependencies //
 const mysql = require("mysql2");
 const inquirer = require('inquirer');
 require("console.table");
@@ -85,8 +86,178 @@ const connection = mysql.createConnection({
       });
   }
 
-  // CRUD FUNCTIONS //
+// CRUD Functions //
 
-  // CREATE //
+// CREATE //
 
-  
+function addEmployee() {
+  console.log("-------------------------------------");
+  connection.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err;
+
+    // Use result to setup an object for the inquirer's department choices
+    const myDeps = res.map(function (deps) {
+      return { 
+        name: deps.name,
+        value: deps.id 
+      };
+    });
+
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "first_name",
+          message: "What is the employee's first name?"
+        },
+        {
+          type: "input",
+          name: "last_name",
+          message: "What is the employee's last name?"
+        },
+        {
+          type: "list",
+          name: "department",
+          message: "What is the new employee's department?",
+          choices: myDeps
+        }
+      ])
+      .then(function (data) {
+        const newEmp = data;
+        // New query looks to assign the employee a role given the specified department
+        connection.query("SELECT * FROM role WHERE department_id ="+newEmp.department+"", function (err, res) {
+          if (err) throw err;
+
+          const myRole = res.map(function (roles) {
+            return { 
+              name: roles.title,
+              value: roles.id 
+            };
+          });
+
+          inquirer
+            .prompt([
+              {
+                type: "list",
+                name: "roles",
+                message: "Select a role:",
+                choices: myRole
+              }
+            ])
+            .then(function(data){
+              const newRole = data.roles;
+              // Select a manager from the employee table
+              connection.query("SELECT id,CONCAT(first_name, ' ', last_name) AS manager FROM employee", function(err, res){
+                if (err) throw err;
+
+                const myMan = res.map(function(man){
+                  return {
+                    name: man.manager,
+                    value: man.id
+                  }
+                })
+               inquirer
+                .prompt([
+                  {
+                    type: "list",
+                    name: "manager",
+                    message: "Select a Manager for the employee:",
+                    choices: myMan
+                  }
+                ]).then(function(data){
+                  // Now insert the new employee into the employee table with all the gathered data
+                  connection.query(
+                    "INSERT INTO employee SET ?",
+                    {
+                      first_name: newEmp.first_name,
+                      last_name: newEmp.last_name,
+                      role_id: newRole,
+                      manager_id: data.manager
+
+                    }
+                   , function(err, res) {
+                     if (err) throw err;
+                     viewAllEmployees();
+                    }
+                  )
+                })
+              })
+            })
+        })
+      })
+  });
+}
+
+// add a role //
+
+function addRole() {
+  console.log("-------------------------------------");
+  connection.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err;
+
+    const myDeps = res.map(function (deps) {
+      return { 
+        name: deps.name,
+        value: deps.id 
+      };
+    });
+
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "title",
+          message: "What is the new role's title?"
+        },
+        {
+          type: "input",
+          name: "salary",
+          message: "What is the new role's salary?"
+        },
+        {
+          type: "list",
+          name: "department",
+          message: "What is the new role's department?",
+          choices: myDeps
+        }
+      ])
+      .then(function (data) {
+        connection.query("INSERT INTO role SET ?",
+          {
+            title: data.title,
+            salary: data.salary,
+            department_id: data.department,
+          },
+          function (err, res) {
+            if (err) throw err;
+            viewAllRoles()
+          }
+        );
+      });
+  });
+}
+
+function addDepartment() {
+  inquirer
+    .prompt([
+      // List navigation options //
+      {
+        type: "input",
+        name: "department",
+        message: "What is the new department's name?",
+      },
+    ])
+    .then(function (data) {
+      connection.query(
+        "INSERT INTO department SET ?",
+        {
+          name: data.department
+        },
+       function(err, res){
+        if (err) throw err;
+        viewAllDepartments();
+       }
+      )
+    })
+}
+
